@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth"
 import { auth } from "/lib/firebase/config.js";
@@ -23,9 +22,6 @@ export default function LogInForm({ changeForm}) {
 
       if (res) {
         sessionStorage.setItem('user', email);
-        console.log(res);
-        setEmail("");
-        setPassword("");
         router.push("/dashboard");
       } else {
         toast.error("Invalid credentials.");

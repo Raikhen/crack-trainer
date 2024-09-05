@@ -1,32 +1,86 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { auth } from "/lib/firebase/config";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import {
+  useCreateUserWithEmailAndPassword,
+  useUpdateProfile
+} from "react-firebase-hooks/auth";
 
 export default function SignUpForm({ changeForm }) {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
+  const [updateProfile, updating, errorUpdatingName] = useUpdateProfile(auth);
+  const router = useRouter();
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+      toast.error("Passwords do not match.");
       return;
     }
-    
-    // Handle sign-up logic here
-    console.log("Email:", email, "Password:", password);
+
+    try {
+      const res = await createUserWithEmailAndPassword(email, password);
+
+      if (res) {
+        sessionStorage.setItem("user", email);
+        updateProfile({ displayName: `${firstName} ${lastName}` });
+
+        router.push("/dashboard");
+      } else {
+        toast.error("An error occurred.");
+      }
+    } catch (error) {
+      toast.error("An error occurred.");
+    }
   };
 
   return (
-    <div className="bg-gray-700 p-6 md:p-8 rounded shadow-lg w-full max-w-sm">
+    <div className="bg-gray-700 p-6 md:p-8 rounded shadow-lg w-full max-w-lg">
       <h2 className="text-2xl md:text-3xl font-semibold text-center mb-6">Sign Up</h2>
       <form onSubmit={handleSignUp}>
+        <div className="flex flex-col lg:flex-row lg:space-x-4">
+          <div className="mb-4 w-full">
+            <label className="block text-gray-400 text-sm font-bold mb-2" htmlFor="firstName">
+              First Name
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              className="w-full p-3 rounded bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your first name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-4 w-full">
+            <label className="block text-gray-400 text-sm font-bold mb-2" htmlFor="lastName">
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              className="w-full p-3 rounded bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your last name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+        
         <div className="mb-4">
-          <label
-            className="block text-gray-400 text-sm font-bold mb-2"
-            htmlFor="email"
-          >
+          <label className="block text-gray-400 text-sm font-bold mb-2" htmlFor="email">
             Email
           </label>
           <input
@@ -40,15 +94,13 @@ export default function SignUpForm({ changeForm }) {
           />
         </div>
         <div className="mb-4">
-          <label
-            className="block text-gray-400 text-sm font-bold mb-2"
-            htmlFor="password"
-          >
+          <label className="block text-gray-400 text-sm font-bold mb-2" htmlFor="password">
             Password
           </label>
           <input
             type="password"
             id="password"
+            autoComplete="new-password"
             className="w-full p-3 rounded bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your password"
             value={password}
@@ -57,15 +109,13 @@ export default function SignUpForm({ changeForm }) {
           />
         </div>
         <div className="mb-6">
-          <label
-            className="block text-gray-400 text-sm font-bold mb-2"
-            htmlFor="confirmPassword"
-          >
+          <label className="block text-gray-400 text-sm font-bold mb-2" htmlFor="confirmPassword">
             Confirm Password
           </label>
           <input
             type="password"
             id="confirmPassword"
+            autoComplete="new-password"
             className="w-full p-3 rounded bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Confirm your password"
             value={confirmPassword}
@@ -88,6 +138,18 @@ export default function SignUpForm({ changeForm }) {
           Log in
         </a>
       </p>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   );
 }
