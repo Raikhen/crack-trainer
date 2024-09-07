@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import { Button } from "../../components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/Card";
 import { UserCircle } from "lucide-react";
@@ -5,6 +7,8 @@ import ClimbCard from "../../components/ClimbCard";
 import TrainerInfoCard from "../../components/TrainerInfoCard";
 import LogsCard from "../../components/LogsCard";
 import UsersCard from "../../components/UsersCard";
+import CrackTrainerSelect from "../../components/CrackTrainerSelect";
+import NewCrackTrainerModal from "../../components/NewCrackTrainerModal";
 
 import {
   DropdownMenu,
@@ -15,30 +19,15 @@ import {
   DropdownMenuTrigger,
 } from "../../components/ui/DropdownMenu";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/Select";
-
 export default function Dashboard() {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="flex items-center justify-between px-4 py-4 bg-background border-b lg:px-6">
         <h1 className="text-xl font-bold sm:text-2xl">Smarty Cracks</h1>
         <div className="flex items-center space-x-2 sm:space-x-4">
-          <Select>
-            <SelectTrigger className="w-[120px] sm:w-[180px]">
-              <SelectValue placeholder="Select view" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="daily">Daily</SelectItem>
-              <SelectItem value="weekly">Weekly</SelectItem>
-              <SelectItem value="monthly">Monthly</SelectItem>
-            </SelectContent>
-          </Select>
+          <CrackTrainerSelect openModal={setModalOpen} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -66,6 +55,7 @@ export default function Dashboard() {
           <LogsCard />
         </div>
       </main>
+      <NewCrackTrainerModal open={modalOpen} setOpen={setModalOpen} />
     </div>
   )
 }

@@ -24,6 +24,7 @@ export default function TrainerInfoCard() {
             <TableHead>Crack sizes</TableHead>
             <TableHead>Manager</TableHead>
             <TableHead>Has lap buttons</TableHead>
+            <TableHead>Has logbook</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -41,6 +42,7 @@ export default function TrainerInfoCard() {
             </TableCell>
             <TableCell>John Doe</TableCell>
             <TableCell>No</TableCell>
+            <TableCell>Yes</TableCell>
           </TableRow>
         </TableBody>
       </Table>
