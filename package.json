@@ -10,14 +10,26 @@
   },
   "dependencies": {
     "@firebase/firestore": "^4.7.0",
+    "@radix-ui/react-dialog": "^1.1.1",
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-popover": "^1.1.1",
+    "@radix-ui/react-select": "^2.1.1",
+    "@radix-ui/react-slot": "^1.1.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.0.0",
     "firebase": "^10.13.0",
+    "lucide-react": "^0.439.0",
     "next": "^14.2.7",
     "next-auth": "^4.24.7",
     "react": "^18",
     "react-dom": "^18",
     "react-firebase-hooks": "^5.1.1",
     "react-google-button": "^0.8.0",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/react": "18.3.4",

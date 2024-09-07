@@ -1,43 +1,71 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "/lib/firebase/config"; // Adjust path based on your structure
+import { Button } from "../../components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/Card";
+import { UserCircle } from "lucide-react";
+import ClimbCard from "../../components/ClimbCard";
+import TrainerInfoCard from "../../components/TrainerInfoCard";
+import LogsCard from "../../components/LogsCard";
+import UsersCard from "../../components/UsersCard";
 
-const CurrentUser = () => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../../components/ui/DropdownMenu";
 
-  useEffect(() => {
-    // This will set up a listener that listens for changes in the authentication state
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user); // User is signed in, set the user
-      } else {
-        setCurrentUser(null); // No user is signed in
-      }
-      setLoading(false); // Stop the loading indicator
-    });
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/Select";
 
-    // Cleanup the listener when the component unmounts
-    return () => unsubscribe();
-  }, []);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
+export default function Dashboard() {
   return (
-    <div>
-      {currentUser ? (
-        <div>
-          <h2>Welcome, {currentUser.displayName || currentUser.email}!</h2>
-          <p>Email: {currentUser.email}</p>
+    <div className="flex flex-col min-h-screen">
+      <header className="flex items-center justify-between px-4 py-4 bg-background border-b lg:px-6">
+        <h1 className="text-xl font-bold sm:text-2xl">Smarty Cracks</h1>
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          <Select>
+            <SelectTrigger className="w-[120px] sm:w-[180px]">
+              <SelectValue placeholder="Select view" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="daily">Daily</SelectItem>
+              <SelectItem value="weekly">Weekly</SelectItem>
+              <SelectItem value="monthly">Monthly</SelectItem>
+            </SelectContent>
+          </Select>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <UserCircle className="h-6 w-6" />
+                <span className="sr-only">Open profile menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-      ) : (
-        <p>No user is signed in.</p>
-      )}
+      </header>
+      <main className="flex-1 p-4 sm:p-6 flex flex-col lg:flex-row gap-4 sm:gap-6">
+        <div className="flex-1 space-y-4 sm:space-y-6 lg:w-1/2">
+          <ClimbCard />
+          <UsersCard />
+        </div>
+        <div className="flex-1 space-y-4 sm:space-y-6 lg:w-1/2">
+          <TrainerInfoCard />
+          <LogsCard />
+        </div>
+      </main>
     </div>
-  );
-};
-
-export default CurrentUser;
+  )
+}
