@@ -65,16 +65,17 @@ export default function UserManagement() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New User</DialogTitle>
-              <DialogDescription>Enter the email address of the new user.</DialogDescription>
+              {/*<DialogDescription>Enter the email address of the new user.</DialogDescription>*/}
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
+            <div className="py-3">
+              <div className="flex flex-col space-y-3">
+                <Label htmlFor="email">
                   Email
                 </Label>
                 <Input
                   id="email"
                   value={newUserEmail}
+                  placeholder="Enter email address"
                   onChange={(e) => setNewUserEmail(e.target.value)}
                   className="col-span-3"
                 />

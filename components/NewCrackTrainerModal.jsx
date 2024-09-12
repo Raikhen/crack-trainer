@@ -1,7 +1,11 @@
 "use client"
-
 import { useState } from "react"; 
 import { Button } from "./ui/Button";
+import { Input } from "./ui/Input";
+import { Label } from "./ui/Label";
+import { Slider } from "./ui/Slider";
+import { Switch } from "./ui/Switch";
+import { crackSizes } from "../lib/utils";
 
 import {
   Dialog,
@@ -11,54 +15,29 @@ import {
   DialogTrigger,
 } from "./ui/Dialog";
 
-import { Input } from "./ui/Input";
-import { Label } from "./ui/Label";
-import { Slider } from "./ui/Slider";
-import { Switch } from "./ui/Switch";
-
-const ColorCircle = ({ color, bgColor, selected, onClick }) => (
-  <button
-    className={`w-8 h-8 rounded-full border-2 ${selected ? 'border-gray-400' : 'border-transparent'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-primary`}
-    style={{ backgroundColor: bgColor }}
-    onClick={onClick}
-    aria-label={`Select ${color}`}
-    aria-pressed={selected}
-  />
-)
-
 export default function NewCrackTrainerModal({ open, setOpen }) {
   const [name, setName] = useState("")
-  const [length, setLength] = useState(25)
+  const [length, setLength] = useState(16)
   const [hasLapButtons, setHasLapButtons] = useState(false)
   const [hasLogbook, setHasLogbook] = useState(false)
-  const [colorCircles, setColorCircles] = useState([
-    { color: "Red", bgColor: "#EF4444", selected: false },
-    { color: "Blue", bgColor: "#3B82F6", selected: false },
-    { color: "Green", bgColor: "#10B981", selected: false },
-    { color: "Yellow", bgColor: "#FBBF24", selected: false },
-    { color: "Purple", bgColor: "#8B5CF6", selected: false },
-    { color: "Pink", bgColor: "#EC4899", selected: false },
-  ])
+  const [toggledCircles, setToggledCircles] = useState({})
 
-  const handleColorToggle = (index) => {
-    setColorCircles(circles =>
-      circles.map((circle, i) =>
-        i === index ? { ...circle, selected: !circle.selected } : circle
-      )
-    )
+  const handleToggle = (colorName) => {
+    setToggledCircles(prev => ({
+      ...prev,
+      [colorName]: !prev[colorName]
+    }))
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const selectedColors = colorCircles.filter(circle => circle.selected).map(circle => circle.color)
-    console.log({ name, length, hasLapButtons, hasLogbook, selectedColors })
+    console.log({ name, length, hasLapButtons, hasLogbook })
     setOpen(false)
     // Reset form
     setName("")
-    setLength(25)
+    setLength(16)
     setHasLapButtons(false)
     setHasLogbook(false)
-    setColorCircles(circles => circles.map(circle => ({ ...circle, selected: false })))
   }
 
   return (
@@ -82,7 +61,7 @@ export default function NewCrackTrainerModal({ open, setOpen }) {
             <Label htmlFor="length">Length (ft)</Label>
             <Slider
               id="length"
-              min={1}
+              min={6}
               max={50}
               step={1}
               value={[length]}
@@ -92,37 +71,46 @@ export default function NewCrackTrainerModal({ open, setOpen }) {
               {length} ft
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="lap-buttons"
-              checked={hasLapButtons}
-              onCheckedChange={setHasLapButtons}
-            />
-            <Label htmlFor="lap-buttons">Has Lap Buttons</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="logbook"
-              checked={hasLogbook}
-              onCheckedChange={setHasLogbook}
-            />
-            <Label htmlFor="logbook">Has Logbook</Label>
-          </div>
-          <div className="space-y-2">
-            <Label>Colors</Label>
-            <div className="flex justify-between">
-              {colorCircles.map((circle, index) => (
-                <ColorCircle
-                  key={circle.color}
-                  {...circle}
-                  onClick={() => handleColorToggle(index)}
+          <div className="flex flex-col space-y-2 pb-4">
+            <Label>Crack sizes</Label>
+            <div className="flex flex-row space-x-4">
+              {crackSizes.map((size) => (
+                <div
+                  key={size.name}
+                  pressed={toggledCircles[size.name]}
+                  onClick={() => handleToggle(size.name)}
+                  className={`
+                    cursor-pointer w-10 h-10 rounded-full transition duration-300
+                    ${size.color} hover:opacity-80
+                    ${toggledCircles[size.name] ? 'opacity-100 ring-2 ring-neutral-600' : 'opacity-50'}
+                  `}
                 />
               ))}
             </div>
           </div>
-          <Button type="submit" className="w-full">
-            Create Crack Trainer
-          </Button>
+          <div className="flex flex-row">
+            <Label htmlFor="lap-buttons">Has lap buttons</Label>
+            <Switch
+              className="ml-auto"
+              id="lap-buttons"
+              checked={hasLapButtons}
+              onCheckedChange={setHasLapButtons}
+            />
+          </div>
+          <div className="flex flex-row">
+            <Label htmlFor="logbook">Has logbook</Label>
+            <Switch
+              className="ml-auto"
+              id="logbook"
+              checked={hasLogbook}
+              onCheckedChange={setHasLogbook}
+            />
+          </div>
+          <div className="pt-2">
+            <Button type="submit" className="w-full">
+              Create Crack Trainer
+            </Button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>
