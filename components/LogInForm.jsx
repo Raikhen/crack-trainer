@@ -5,8 +5,13 @@ import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth"
 import { auth } from "/lib/firebase/config.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link"
+import { Button } from "./ui/Button"
+import { Input } from "./ui/Input"
+import { Label } from "./ui/Label"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/Card"
 
-export default function LogInForm({ changeForm}) {
+export default function LogInForm({ changeForm }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
@@ -32,60 +37,50 @@ export default function LogInForm({ changeForm}) {
   };
   
   return (
-    <div className="bg-gray-700 p-6 md:p-8 rounded shadow-lg w-full max-w-sm">
-      <h2 className="text-2xl md:text-3xl font-semibold text-center mb-6">Login</h2>
-      <form onSubmit={handleLogin}>
-        <div className="mb-4">
-          <label
-            className="block text-gray-400 text-sm font-bold mb-2"
-            htmlFor="email"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            autoComplete="email"
-            className="w-full p-3 rounded bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label
-            className="block text-gray-400 text-sm font-bold mb-2"
-            htmlFor="password"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            className="w-full p-3 rounded bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div className="flex items-center justify-between">
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Log In
-          </button>
-        </div>
-      </form>
-      <p className="text-gray-400 text-sm text-center mt-6">
-        Don&apos;t have an account?{" "}
-        <a onClick={changeForm} className="text-blue-400 hover:text-blue-300 cursor-pointer">
-          Sign up
-        </a>
-      </p>
+    <Card className="w-full max-w-sm mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">Login</CardTitle>
+        <CardDescription>Enter your credentials to access your account</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleLogin}>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                placeholder="Enter your email"
+                required
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                required
+                type="password"
+                autoComplete="current-password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col space-y-4 mt-6">
+            <Button className="w-full" type="submit">Sign In</Button>
+            <div className="text-sm text-center">
+              {`Don't have an account? `}
+              <a onClick={() => changeForm("signup")} className="text-primary hover:underline cursor-pointer">
+                Sign up
+              </a>
+            </div>
+          </div>
+        </form>
+      </CardContent>
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
@@ -98,6 +93,7 @@ export default function LogInForm({ changeForm}) {
         pauseOnHover
         theme="dark"
       />
-    </div>
+    </Card>
+    
   );
 }

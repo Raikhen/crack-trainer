@@ -4,6 +4,10 @@ import { useRouter } from "next/navigation";
 import { auth } from "/lib/firebase/config";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Button } from "./ui/Button"
+import { Input } from "./ui/Input"
+import { Label } from "./ui/Label"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/Card"
 
 import {
   useCreateUserWithEmailAndPassword,
@@ -45,99 +49,83 @@ export default function SignUpForm({ changeForm }) {
   };
 
   return (
-    <div className="bg-gray-700 p-6 md:p-8 rounded shadow-lg w-full max-w-lg">
-      <h2 className="text-2xl md:text-3xl font-semibold text-center mb-6">Sign Up</h2>
-      <form onSubmit={handleSignUp}>
-        <div className="flex flex-col lg:flex-row lg:space-x-4">
-          <div className="mb-4 w-full">
-            <label className="block text-gray-400 text-sm font-bold mb-2" htmlFor="firstName">
-              First Name
-            </label>
-            <input
-              type="text"
-              id="firstName"
-              className="w-full p-3 rounded bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your first name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-            />
+    <Card className="w-full max-w-md mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">Sign Up</CardTitle>
+        <CardDescription>Create a new account to get started</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSignUp}>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  placeholder="John"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  placeholder="Doe"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                placeholder="johndoe@example.com"
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                autoComplete="new-password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                type="password"
+                id="confirmPassword"
+                autoComplete="new-password"
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
           </div>
-          <div className="mb-4 w-full">
-            <label className="block text-gray-400 text-sm font-bold mb-2" htmlFor="lastName">
-              Last Name
-            </label>
-            <input
-              type="text"
-              id="lastName"
-              className="w-full p-3 rounded bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your last name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-            />
+          <div className="flex flex-col space-y-4 mt-6">
+            <Button className="w-full">Create Account</Button>
+            <div className="text-sm text-center">
+              {`Already have an account? `}
+              <a onClick={() => changeForm("login")} className="text-primary hover:underline cursor-pointer">
+                Log in
+              </a>
+            </div>
           </div>
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-gray-400 text-sm font-bold mb-2" htmlFor="email">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            className="w-full p-3 rounded bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-400 text-sm font-bold mb-2" htmlFor="password">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            autoComplete="new-password"
-            className="w-full p-3 rounded bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-gray-400 text-sm font-bold mb-2" htmlFor="confirmPassword">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            id="confirmPassword"
-            autoComplete="new-password"
-            className="w-full p-3 rounded bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Confirm your password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div className="flex items-center justify-between">
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Sign Up
-          </button>
-        </div>
-      </form>
-      <p className="text-gray-400 text-sm text-center mt-6">
-        Already have an account?{" "}
-        <a onClick={changeForm} className="text-blue-400 hover:text-blue-300 cursor-pointer">
-          Log in
-        </a>
-      </p>
+        </form>
+      </CardContent>
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
@@ -150,6 +138,6 @@ export default function SignUpForm({ changeForm }) {
         pauseOnHover
         theme="dark"
       />
-    </div>
+    </Card>
   );
 }
