@@ -1,40 +1,49 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth"
-import { auth } from "/lib/firebase/config.js";
+import { app } from "/lib/firebase/config";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link"
 import { Button } from "./ui/Button"
 import { Input } from "./ui/Input"
 import { Label } from "./ui/Label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/Card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/Card";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LogInForm({ changeForm }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleLogin = async (e) => {
-    console.log("Logging in...");
-
-    e.preventDefault();
+  async function handleLogin(event) {
+    event.preventDefault();
+    setError("");
 
     try {
-      const res = await signInWithEmailAndPassword(email, password);
+      const credential = await signInWithEmailAndPassword(
+        getAuth(app),
+        email,
+        password
+      );
 
-      if (res) {
-        sessionStorage.setItem('user', email);
-        router.push("/dashboard");
-      } else {
-        toast.error("Invalid credentials.");
-      }
-    } catch (error) {
-      toast.error("Invalid credentials.");
+      console.log('here');
+
+      const idToken = await credential.user.getIdToken();
+
+      await fetch("/api/login", {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+
+      router.push("/dashboard");
+    } catch (e) {
+      setError(e.message);
+      console.error(e);
     }
-  };
+  }
   
   return (
     <Card className="w-full max-w-sm mx-auto">

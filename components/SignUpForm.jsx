@@ -1,52 +1,45 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "/lib/firebase/config";
+import { auth, app } from "/lib/firebase/config";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "./ui/Button"
 import { Input } from "./ui/Input"
 import { Label } from "./ui/Label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/Card"
-
-import {
-  useCreateUserWithEmailAndPassword,
-  useUpdateProfile
-} from "react-firebase-hooks/auth";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/Card"
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 export default function SignUpForm({ changeForm }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
-  const [updateProfile, updating, errorUpdatingName] = useUpdateProfile(auth);
+  const [confirmation, setConfirmation] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
+  async function handleSignUp(event) {
+    console.log("handleSignUp");
 
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match.");
+    event.preventDefault();
+
+    setError("");
+
+    if (password !== confirmation) {
+      setError("Passwords don't match");
       return;
     }
 
     try {
-      const res = await createUserWithEmailAndPassword(email, password);
-
-      if (res) {
-        sessionStorage.setItem("user", email);
-        updateProfile({ displayName: `${firstName} ${lastName}` });
-
-        router.push("/dashboard");
-      } else {
-        toast.error("An error occurred.");
-      }
-    } catch (error) {
-      toast.error("An error occurred.");
+      await createUserWithEmailAndPassword(getAuth(app), email, password);
+      changeForm("login");
+    } catch (e) {
+      setError(e.message);
+      console.error(e);
     }
-  };
+  }
+
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -109,8 +102,8 @@ export default function SignUpForm({ changeForm }) {
                 id="confirmPassword"
                 autoComplete="new-password"
                 placeholder="Confirm your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={confirmation}
+                onChange={(e) => setConfirmation(e.target.value)}
                 required
               />
             </div>
