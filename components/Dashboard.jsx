@@ -9,6 +9,9 @@ import LogsCard from "./LogsCard";
 import UsersCard from "./UsersCard";
 import CrackTrainerSelect from "./CrackTrainerSelect";
 import NewCrackTrainerModal from "./NewCrackTrainerModal";
+import { getAuth, signOut } from "firebase/auth";
+import { app } from "/lib/firebase/config";
+import { useRouter } from "next/navigation";
 
 import {
   DropdownMenu,
@@ -20,7 +23,14 @@ import {
 } from "./ui/DropdownMenu";
 
 export default function Dashboard() {
+  const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
+
+  async function handleLogout() {
+    await signOut(getAuth(app));
+    await fetch("/api/logout");
+    router.push("/");
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -40,7 +50,7 @@ export default function Dashboard() {
               <DropdownMenuSeparator />
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
