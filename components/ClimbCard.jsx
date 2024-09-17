@@ -55,8 +55,9 @@ export default function ClimbCard() {
           <Image
             src="/placeholder.jpg"
             alt="Climbing route"
-            layout="fill"
-            objectFit="cover"
+            fill
+            style={{ objectFit: "cover" }}
+            priority
             className="rounded-md"
           />
         </div>

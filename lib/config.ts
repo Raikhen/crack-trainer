@@ -22,3 +22,10 @@ export const clientConfig = {
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 };
+
+export const authConfig = {
+  apiKey: clientConfig.apiKey,
+  cookieName: serverConfig.cookieName,
+  cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+  serviceAccount: serverConfig.serviceAccount,
+}

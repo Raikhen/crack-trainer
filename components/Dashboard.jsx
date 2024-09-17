@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu";
 
-export default function Dashboard() {
+export default function Dashboard({ trainers }) {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -31,6 +31,8 @@ export default function Dashboard() {
     await fetch("/api/logout");
     router.push("/");
   }
+
+  console.log(trainers);
 
   return (
     <div className="flex flex-col min-h-screen">
